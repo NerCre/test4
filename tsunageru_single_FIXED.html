@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>命をツナゲル</title>
+  <!-- The green‑themed styles for Tsunageru -->
+  <style>
+/* =========================================================
+   命をツナゲル - Green themed mobile UI
+   This stylesheet borrows layout conventions from the
+   existing "命をツナグ" application but adapts the
+   palette to a green basis so that users can easily
+   distinguish between the two apps. Variables drive
+   most colours to simplify future theming. Only the
+   elements used in tsunageru.html are defined here.
+   ========================================================= */
+
+/* Base variables */
+:root {
+  --bg: #f6fdf6;         /* light greenish background */
+  --card: #ffffff;        /* card background */
+  --text: #1b3020;        /* dark text colour */
+  --muted: #5a6a55;       /* secondary text colour */
+  --line: rgba(27, 48, 32, 0.15);
+  --primary: #2e7d32;     /* main green */
+  --secondary: #6d6d6d;   /* grey for secondary buttons */
+  --radius: 14px;
+  --shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App shell */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(246, 253, 246, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 10px calc(10px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--primary);
+  user-select: none;
+}
+
+.icon-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Main area */
+.main {
+  flex: 1;
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 14px 14px calc(18px + env(safe-area-inset-bottom));
+}
+
+/* Views */
+.view { display: none; }
+.view.active { display: block; }
+
+h1, h2 {
+  color: var(--primary);
+  font-weight: 800;
+  text-align: center;
+}
+
+h2 {
+  font-size: 20px;
+  margin: 4px 0 14px;
+}
+
+/* Home and generic elements */
+.hero {
+  text-align: center;
+  padding: 16px 10px 10px;
+}
+
+.app-title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.button-container {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius);
+  padding: 16px 16px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: var(--shadow);
+  transition: transform 0.06s ease, filter 0.2s ease;
+}
+
+.btn:active { transform: translateY(1px) scale(0.99); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+
+.btn-primary { background: var(--primary); }
+.btn-secondary { background: var(--secondary); }
+
+/* Cards and tables */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+/* Summary rows shown on result screen */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 16px;
+}
+.summary-row span {
+  color: var(--muted);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+.summary-row strong {
+  flex-grow: 1;
+  text-align: right;
+  font-weight: 700;
+  color: var(--text);
+}
+/* Highlight for medical warnings */
+.summary-row strong.alert {
+  color: #c62828; /* red for abnormal/important values */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.data-table th, .data-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.data-table th {
+  background: #f0f8f0;
+  font-weight: 700;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+textarea, input[type="text"], input[type="password"], input[type="tel"] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.form {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.small, .small-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+
+/* Section headers / warnings */
+.section-title{
+  margin: 10px 0 8px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: .02em;
+}
+.section-sub{
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.warn-box{
+  border: 1px solid rgba(198,40,40,.35);
+  background: rgba(198,40,40,.06);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin: 10px 0 12px;
+}
+.warn-box strong{ color:#c62828; }
+.details-raw{
+  margin-top: 12px;
+}
+.details-raw summary{
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--muted);
+}
+.details-raw pre{
+  margin-top: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #fbfffb;
+}
+.inline-btn{
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.badge{
+  display:inline-block;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(46,125,50,.12);
+  color: var(--primary);
+}
+.note-nostore{
+  text-align:center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+</style>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Top bar shown on all pages except during login -->
+    <header id="topbar" class="topbar" aria-label="操作バー">
+      <button id="btnBack" class="icon-btn" type="button" aria-label="戻る">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5 9 12l6.5 6.5-1.4 1.4L6.2 12l7.9-7.9 1.4 1.4z"/></svg>
+        <span>戻る</span>
+      </button>
+      <div class="topbar-title" aria-hidden="true">命をツナゲル</div>
+      <button id="btnRestartGlobal" class="icon-btn" type="button" aria-label="最初から">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 13.65-6.65z"/></svg>
+        <span>最初から</span>
+      </button>
+    </header>
+
+    <!-- Main area holding all views -->
+    <main class="main">
+      <!-- Login view: ask for user password before anything else -->
+      <section id="view-login" class="view active" aria-label="ログイン">
+        <h2>パスワードを入力してください</h2>
+        <div class="card">
+          <input id="loginPassword" type="password" placeholder="ユーザーパスワード" autocomplete="current-password" />
+          <button id="btnLogin" class="btn btn-primary" type="button">ログイン</button>
+        </div>
+        <p class="small-note">※ 安全課担当者のみが使用します。</p>
+      </section>
+
+      <!-- Home screen after login -->
+      <section id="view-home" class="view" aria-label="ホーム">
+        <div class="hero">
+          <h1 class="app-title">命をツナゲル</h1>
+          <p class="tagline">受信した連絡から職員の医療情報を表示します。</p>
+        </div>
+        <div class="button-container">
+          <button id="btnPasteSms" class="btn btn-primary" type="button">
+            メッセージを貼り付ける
+          </button>
+          <button id="btnOpenSettings" class="btn btn-secondary" type="button">
+            マスタ設定
+          </button>
+        </div>
+        <p class="small-note">※ 貼り付けた職員IDから医療情報を照合し、
+表示のみ行います（保存しません）。</p>
+      </section>
+
+      <!-- Paste input view -->
+      <section id="view-input" class="view" aria-label="貼り付け">
+        <h2>メッセージを貼り付け</h2>
+        <p class="small">「命をツナグ」から届いたSMSの本文をそのまま貼り付けてください。</p>
+        <textarea id="inputSms" rows="6" placeholder="ここにメッセージを貼り付け"></textarea>
+        <div class="footer-actions">
+          <button id="btnParse" class="btn btn-primary" type="button">
+            照合する
+          </button>
+        </div>
+      </section>
+
+      <!-- Result view showing the aggregated medical information -->
+      <section id="view-result" class="view" aria-label="結果">
+        <h2>職員情報</h2>
+        <div id="resultCard" class="card">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="footer-actions">
+          <button id="btnResultBack" class="btn btn-secondary" type="button">戻る</button>
+        </div>
+      </section>
+
+      <!-- Settings login (admin) view -->
+      <section id="view-admin-login" class="view" aria-label="管理者ログイン">
+        <h2>マスタ設定ログイン</h2>
+        <div class="card">
+          <input id="adminPassword" type="password" placeholder="管理パスワード" autocomplete="current-password" />
+          <button id="btnAdminLogin" class="btn btn-primary" type="button">ログイン</button>
+        </div>
+        <p class="small-note">※ マスタ更新には管理者権限が必要です。</p>
+      </section>
+
+      <!-- Master settings view -->
+      <section id="view-settings" class="view" aria-label="マスタ設定">
+        <h2>マスタ設定</h2>
+        <div class="card">
+          <p class="small">登録済み職員一覧</p>
+          <table id="staffTable" class="data-table"></table>
+          <button id="btnAddStaff" class="btn btn-primary" type="button">職員を追加</button>
+        </div>
+        <div class="footer-actions">
+          <button id="btnSettingsBack" class="btn btn-secondary" type="button">戻る</button>
+        </div>
+      </section>
+
+      <!-- Staff edit view (add/edit) -->
+      <section id="view-edit" class="view" aria-label="職員編集">
+        <h2 id="editTitle">職員追加/編集</h2>
+        <div class="form">
+          <label>職員ID<input id="editId" type="text" placeholder="ID (例: S001)" /></label>
+          <label>氏名<input id="editName" type="text" placeholder="氏名" /></label>
+          <label>血液型<input id="editBlood" type="text" placeholder="血液型 (例: O+)" /></label>
+          <label>既往歴<textarea id="editHistory" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>薬剤情報<textarea id="editMedications" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>アレルギー<textarea id="editAllergies" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>かかりつけ医<input id="editDoctor" type="text" placeholder="医師名" /></label>
+          <label>緊急連絡先（続柄）<input id="editContactName" type="text" placeholder="例: 妻" /></label>
+          <label>緊急連絡先（電話番号）<input id="editContactPhone" type="tel" placeholder="電話番号" /></label>
+        </div>
+        <div class="footer-actions">
+          <button id="btnSaveStaff" class="btn btn-primary" type="button">保存</button>
+          <button id="btnEditBack" class="btn btn-secondary" type="button">キャンセル</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast for notifications -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+/* =========================================================
+ * 命をツナゲル - Offline emergency lookup tool (single HTML)
+ *
+ * ✅ 最優先：
+ *  - 「命をツナグ」から届いたSMS本文を貼り付け
+ *  - 職員IDでマスタ照合
+ *  - ツナグ情報（氏名/被災状況/現在地/備考）＋医療情報を1画面に統合表示
+ *  - 端末内に“保存しない” (貼り付け本文はメモリ上のみ)
+ *
+ * マスタ編集は管理者ログイン後のみ可能。
+ * ========================================================= */
+
+(function() {
+  'use strict';
+
+  // Constants for localStorage keys
+  const STORAGE_KEY = 'tsunageru_master_v1';
+
+  // Demo credentials (plain text). In production these would be salted + hashed.
+  const USER_PASS = '0000';
+  const ADMIN_PASS = 'admin123';
+
+  // References to DOM elements
+  const views = {
+    login: document.getElementById('view-login'),
+    home: document.getElementById('view-home'),
+    input: document.getElementById('view-input'),
+    result: document.getElementById('view-result'),
+    adminLogin: document.getElementById('view-admin-login'),
+    settings: document.getElementById('view-settings'),
+    edit: document.getElementById('view-edit'),
+  };
+
+  const topbar = document.getElementById('topbar');
+  const btnBack = document.getElementById('btnBack');
+  const btnRestartGlobal = document.getElementById('btnRestartGlobal');
+
+  // Buttons on home
+  const btnPasteSms = document.getElementById('btnPasteSms');
+  const btnOpenSettings = document.getElementById('btnOpenSettings');
+
+  // Login fields
+  const loginPassword = document.getElementById('loginPassword');
+  const btnLogin = document.getElementById('btnLogin');
+  const adminPassword = document.getElementById('adminPassword');
+  const btnAdminLogin = document.getElementById('btnAdminLogin');
+
+  // Input and parse
+  const inputSms = document.getElementById('inputSms');
+  const btnParse = document.getElementById('btnParse');
+
+  // Result view
+  const resultCard = document.getElementById('resultCard');
+  const btnResultBack = document.getElementById('btnResultBack');
+
+  // Settings view
+  const staffTable = document.getElementById('staffTable');
+  const btnAddStaff = document.getElementById('btnAddStaff');
+  const btnSettingsBack = document.getElementById('btnSettingsBack');
+
+  // Edit view
+  const editTitle = document.getElementById('editTitle');
+  const editId = document.getElementById('editId');
+  const editName = document.getElementById('editName');
+  const editBlood = document.getElementById('editBlood');
+  const editHistory = document.getElementById('editHistory');
+  const editMedications = document.getElementById('editMedications');
+  const editAllergies = document.getElementById('editAllergies');
+  const editDoctor = document.getElementById('editDoctor');
+  const editContactName = document.getElementById('editContactName');
+  const editContactPhone = document.getElementById('editContactPhone');
+  const btnSaveStaff = document.getElementById('btnSaveStaff');
+  const btnEditBack = document.getElementById('btnEditBack');
+
+  // Toast
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+
+  // Navigation stack for back button
+  const navStack = [];
+
+  // Session (memory only)
+  let isAdmin = false;
+  let currentSms = null; // {id,name,status,location,note,raw}
+
+  /**
+   * Show a view by id and hide others.
+   */
+  function showView(name, push = true) {
+    Object.keys(views).forEach((k) => views[k].classList.remove('active'));
+    views[name].classList.add('active');
+    if (push) navStack.push(name);
+
+    // Hide topbar during login/admin login
+    if (name === 'login' || name === 'adminLogin') topbar.style.display = 'none';
+    else topbar.style.display = 'flex';
+
+    // Enter hooks
+    if (name === 'home') {
+      clearTransient();
+    }
+    if (name === 'settings' || name === 'edit') {
+      // Guard: settings/edit require admin
+      if (!isAdmin) {
+        toast('管理者ログインが必要です');
+        showView('adminLogin');
+      }
+    }
+  }
+
+  /**
+   * Display a toast message.
+   */
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
+  }
+
+  /**
+   * Clear transient (non-stored) data.
+   */
+  function clearTransient() {
+    currentSms = null;
+    if (inputSms) inputSms.value = '';
+    if (resultCard) resultCard.innerHTML = '';
+  }
+
+  /**
+   * Load master data from localStorage. If none exists, create defaults.
+   */
+  function loadMaster() {
+    try {
+      const json = localStorage.getItem(STORAGE_KEY);
+      if (json) return JSON.parse(json);
+    } catch (e) {
+      console.warn('Failed to parse master data:', e);
+    }
+
+    const sample = {
+      staff: [
+        {
+          id: 'S001',
+          name: '佐藤 一郎',
+          blood: 'O+',
+          history: ['高血圧'],
+          medications: ['降圧剤'],
+          allergies: ['ピーナッツ'],
+          doctor: '山田 医師',
+          contact: { name: '妻', phone: '090-1234-5678' },
+        },
+        {
+          id: 'S002',
+          name: '高橋 花子',
+          blood: 'A−',
+          history: ['糖尿病'],
+          medications: ['インスリン'],
+          allergies: [],
+          doctor: '鈴木 医師',
+          contact: { name: '夫', phone: '080-9876-5432' },
+        },
+      ],
+    };
+    saveMaster(sample);
+    return sample;
+  }
+
+  function saveMaster(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  /**
+   * Extract staff ID from SMS text.
+   */
+  function extractIdFromSms(text) {
+    if (!text) return null;
+    const s = String(text).replace(/：/g, ':');
+    let m = s.match(/(?:ID|職員ID)\s*[:\s]\s*([A-Za-z0-9_-]+)/i);
+    if (m) return m[1].trim();
+    m = s.match(/([A-Za-z0-9]{3,})/);
+    return m ? m[1].trim() : null;
+  }
+
+  /**
+   * Parse Tsunagu SMS body for display (no storage).
+   */
+  function parseSms(text) {
+    const raw = String(text || '');
+    const norm = raw.replace(/\r\n/g, '\n');
+
+    const pick = (reList) => {
+      for (const re of reList) {
+        const m = norm.match(re);
+        if (m && m[1]) return m[1].trim();
+      }
+      return '';
+    };
+
+    const id = extractIdFromSms(norm) || '';
+    const name = pick([
+      /(?:^|\n)\s*(?:氏名|名前)\s*[:：]\s*(.+)\s*$/mi,
+      /(?:^|\n)\s*Name\s*[:：]\s*(.+)\s*$/mi,
+    ]);
+    const status = pick([
+      /(?:^|\n)\s*(?:被災状況|状況)\s*[:：]\s*(.+)\s*$/mi,
+      /(?:^|\n)\s*(?:Status)\s*[:：]\s*(.+)\s*$/mi,
+    ]);
+    const location = pick([
+      /(?:^|\n)\s*(?:現在地|場所|所在)\s*[:：]\s*(.+)\s*$/mi,
+      /(?:^|\n)\s*(?:Location)\s*[:：]\s*(.+)\s*$/mi,
+    ]);
+    const note = pick([
+      /(?:^|\n)\s*(?:備考|メモ|特記事項)\s*[:：]\s*(.+)\s*$/mi,
+      /(?:^|\n)\s*(?:Note)\s*[:：]\s*(.+)\s*$/mi,
+    ]);
+
+    return { id, name, status, location, note, raw: norm.trim() };
+  }
+
+  /**
+   * Render the result card for a staff record + sms.
+   */
+  function renderResult(staff, sms) {
+    const esc = (x) => escapeHtml(String(x ?? '').trim() || '-');
+    const list = (arr) => (arr && arr.length ? arr.map((v) => escapeHtml(String(v))).join('、') : '-');
+
+    const smsName = sms?.name || '';
+    const smsStatus = sms?.status || '';
+    const smsLoc = sms?.location || '';
+    const smsNote = sms?.note || '';
+
+    const smsSection = `
+      <div class="section-title">受信情報 <span class="badge">命をツナグ</span></div>
+      <div class="summary-row"><span>職員ID</span><strong>${esc(sms?.id || staff?.id || '')}</strong></div>
+      <div class="summary-row"><span>氏名（受信）</span><strong>${esc(smsName)}</strong></div>
+      <div class="summary-row"><span>被災状況</span><strong>${esc(smsStatus)}</strong></div>
+      <div class="summary-row"><span>現在地</span><strong>${esc(smsLoc)}</strong></div>
+      <div class="summary-row"><span>備考</span><strong>${esc(smsNote)}</strong></div>
+    `;
+
+    if (!staff) {
+      resultCard.innerHTML = `
+        ${smsSection}
+        <div class="warn-box">
+          <strong>未登録の職員IDです。</strong><br>
+          マスタに登録されていないため、医療情報を表示できません。\n
+          <div style="margin-top:10px; display:flex; justify-content:center;">
+            <button id="btnGoAdminFromResult" class="inline-btn" type="button">マスタ設定へ</button>
+          </div>
+        </div>
+        ${sms?.raw ? `<details class="details-raw"><summary>貼り付け本文（保存されません）</summary><pre>${esc(sms.raw)}</pre></details>` : ''}
+        <p class="note-nostore">※ 本画面の情報は保存されません。「最初から」または戻るで消去されます。</p>
+      `;
+      return;
+    }
+
+    const hasHistory = staff.history && staff.history.length;
+    const hasMedications = staff.medications && staff.medications.length;
+    const hasAllergies = staff.allergies && staff.allergies.length;
+
+    const medSection = `
+      <div class="section-title" style="margin-top:14px;">医療情報 <span class="badge">命をツナゲル</span></div>
+      <div class="summary-row"><span>氏名（マスタ）</span><strong>${esc(staff.name)}</strong></div>
+      <div class="summary-row"><span>血液型</span><strong>${esc(staff.blood)}</strong></div>
+      <div class="summary-row"><span>既往歴</span><strong class="${hasHistory ? 'alert' : ''}">${list(staff.history)}</strong></div>
+      <div class="summary-row"><span>薬剤情報</span><strong class="${hasMedications ? 'alert' : ''}">${list(staff.medications)}</strong></div>
+      <div class="summary-row"><span>アレルギー</span><strong class="${hasAllergies ? 'alert' : ''}">${list(staff.allergies)}</strong></div>
+      <div class="summary-row"><span>かかりつけ医</span><strong>${esc(staff.doctor)}</strong></div>
+      <div class="summary-row"><span>緊急連絡先</span><strong>${esc(staff.contact?.name)} (${esc(staff.contact?.phone)})</strong></div>
+    `;
+
+    resultCard.innerHTML = `
+      ${smsSection}
+      ${medSection}
+      ${sms?.raw ? `<details class="details-raw"><summary>貼り付け本文（保存されません）</summary><pre>${esc(sms.raw)}</pre></details>` : ''}
+      <p class="note-nostore">※ 本画面の情報は保存されません。「最初から」または戻るで消去されます。</p>
+    `;
+  }
+
+  /**
+   * Populate the staff table in settings view.
+   */
+  function populateStaffTable() {
+    const master = loadMaster();
+    const rows = master.staff.map((s, idx) => `
+      <tr>
+        <td>${escapeHtml(s.id)}</td>
+        <td>${escapeHtml(s.name)}</td>
+        <td><button class="edit-btn" data-index="${idx}">編集</button></td>
+        <td><button class="delete-btn" data-index="${idx}">削除</button></td>
+      </tr>`);
+
+    staffTable.innerHTML = `
+      <thead>
+        <tr><th>ID</th><th>氏名</th><th colspan="2">操作</th></tr>
+      </thead>
+      <tbody>${rows.join('')}</tbody>
+    `;
+
+    staffTable.querySelectorAll('.edit-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        openEdit(index);
+      });
+    });
+
+    staffTable.querySelectorAll('.delete-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        if (confirm('この職員を削除しますか？')) {
+          const data = loadMaster();
+          data.staff.splice(index, 1);
+          saveMaster(data);
+          populateStaffTable();
+          toast('削除しました');
+        }
+      });
+    });
+  }
+
+  function openEdit(index) {
+    if (!isAdmin) {
+      toast('管理者ログインが必要です');
+      showView('adminLogin');
+      return;
+    }
+    const master = loadMaster();
+    if (index != null) {
+      const s = master.staff[index];
+      editTitle.textContent = '職員編集';
+      editId.value = s.id;
+      editName.value = s.name;
+      editBlood.value = s.blood;
+      editHistory.value = s.history ? s.history.join('、') : '';
+      editMedications.value = s.medications ? s.medications.join('、') : '';
+      editAllergies.value = s.allergies ? s.allergies.join('、') : '';
+      editDoctor.value = s.doctor || '';
+      editContactName.value = s.contact?.name || '';
+      editContactPhone.value = s.contact?.phone || '';
+      btnSaveStaff.dataset.index = String(index);
+    } else {
+      editTitle.textContent = '職員追加';
+      editId.value = '';
+      editName.value = '';
+      editBlood.value = '';
+      editHistory.value = '';
+      editMedications.value = '';
+      editAllergies.value = '';
+      editDoctor.value = '';
+      editContactName.value = '';
+      editContactPhone.value = '';
+      btnSaveStaff.dataset.index = '';
+    }
+    showView('edit');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[c]));
+  }
+
+  function saveStaff() {
+    if (!isAdmin) {
+      toast('管理者ログインが必要です');
+      showView('adminLogin');
+      return;
+    }
+
+    const id = editId.value.trim();
+    const name = editName.value.trim();
+    if (!id || !name) {
+      toast('IDと氏名は必須です');
+      return;
+    }
+
+    const blood = editBlood.value.trim();
+    const history = editHistory.value.split(/[,、]\s*/).filter(Boolean);
+    const meds = editMedications.value.split(/[,、]\s*/).filter(Boolean);
+    const allergies = editAllergies.value.split(/[,、]\s*/).filter(Boolean);
+    const doctor = editDoctor.value.trim();
+    const contactName = editContactName.value.trim();
+    const contactPhone = editContactPhone.value.trim();
+
+    const data = loadMaster();
+    const idxStr = btnSaveStaff.dataset.index;
+
+    if (idxStr !== '') {
+      const index = parseInt(idxStr, 10);
+      data.staff[index] = {
+        id,
+        name,
+        blood,
+        history,
+        medications: meds,
+        allergies,
+        doctor,
+        contact: { name: contactName, phone: contactPhone },
+      };
+    } else {
+      data.staff.push({
+        id,
+        name,
+        blood,
+        history,
+        medications: meds,
+        allergies,
+        doctor,
+        contact: { name: contactName, phone: contactPhone },
+      });
+    }
+
+    saveMaster(data);
+    populateStaffTable();
+    showView('settings');
+    toast('保存しました');
+  }
+
+  function init() {
+    // Back button
+    btnBack.addEventListener('click', () => {
+      navStack.pop(); // current
+      const prev = navStack.pop() || 'home';
+      showView(prev);
+    });
+
+    // Restart
+    btnRestartGlobal.addEventListener('click', () => {
+      isAdmin = false;
+      navStack.length = 0;
+      clearTransient();
+      showView('home');
+    });
+
+    // Login
+    btnLogin.addEventListener('click', () => {
+      const pass = loginPassword.value.trim();
+      if (pass === USER_PASS) {
+        loginPassword.value = '';
+        isAdmin = false;
+        navStack.length = 0;
+        showView('home');
+      } else {
+        toast('パスワードが違います');
+      }
+    });
+
+    // Home -> input
+    btnPasteSms.addEventListener('click', () => {
+      clearTransient();
+      showView('input');
+    });
+
+    // Parse + match
+    btnParse.addEventListener('click', () => {
+      const text = inputSms.value || '';
+      const sms = parseSms(text);
+      if (!sms.id) {
+        toast('職員IDが検出できませんでした');
+        return;
+      }
+      currentSms = sms;
+
+      const master = loadMaster();
+      const staff = master.staff.find((s) => s.id === sms.id);
+
+      renderResult(staff || null, sms);
+      showView('result');
+
+      if (!staff) toast('未登録のIDです');
+    });
+
+    // Result back
+    btnResultBack.addEventListener('click', () => {
+      clearTransient();
+      showView('home');
+    });
+
+    // Result -> admin
+    resultCard.addEventListener('click', (e) => {
+      const t = e.target;
+      if (t && t.id === 'btnGoAdminFromResult') {
+        adminPassword.value = '';
+        showView('adminLogin');
+      }
+    });
+
+    // Home -> admin login
+    btnOpenSettings.addEventListener('click', () => {
+      adminPassword.value = '';
+      showView('adminLogin');
+    });
+
+    // Admin login
+    btnAdminLogin.addEventListener('click', () => {
+      const pass = adminPassword.value.trim();
+      if (pass === ADMIN_PASS) {
+        isAdmin = true;
+        populateStaffTable();
+        showView('settings');
+      } else {
+        isAdmin = false;
+        toast('管理パスワードが違います');
+      }
+    });
+
+    // Settings back
+    btnSettingsBack.addEventListener('click', () => {
+      isAdmin = false;
+      showView('home');
+    });
+
+    // Add staff
+    btnAddStaff.addEventListener('click', () => openEdit(null));
+
+    // Save staff
+    btnSaveStaff.addEventListener('click', saveStaff);
+
+    // Edit cancel
+    btnEditBack.addEventListener('click', () => showView('settings'));
+
+    // Preload master
+    loadMaster();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
