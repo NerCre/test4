@@ -1,0 +1,364 @@
+/* =========================================================
+   命をツナゲル - Mobile-first UI
+   オフライン利用を想定したシンプルな照合アプリ
+   ========================================================= */
+
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Color palette tuned to a green theme to differentiate from 命をツナグ */
+  --bg: #f6f9f7;
+  --card: #ffffff;
+  --text: #102a43;
+  --muted: #52606d;
+  --line: rgba(16, 42, 67, 0.12);
+  --primary: #2e7d32;
+  --primary-light: #66bb6a;
+  --secondary: #6c757d;
+  --radius: 14px;
+  --shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout shells */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(246, 249, 247, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 10px calc(10px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  user-select: none;
+}
+
+.icon-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.main {
+  flex: 1;
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 14px 14px calc(18px + env(safe-area-inset-bottom));
+}
+
+/* Views */
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--primary);
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+}
+
+h2 {
+  font-size: 20px;
+  margin: 4px 0 14px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 18px;
+  margin: 14px 0 10px;
+}
+
+/* Hero on login */
+.hero {
+  text-align: center;
+  padding: 16px 10px 10px;
+}
+
+.mascot img {
+  width: 128px;
+  height: 128px;
+  margin: 8px auto 10px;
+  display: block;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.12));
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Forms */
+.login-forms {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-section {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.input-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.input-group input,
+.input-group textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 16px;
+  width: 100%;
+  color: var(--text);
+  background: var(--card);
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: var(--shadow);
+  transition: transform 0.06s ease, filter 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+}
+
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Info card */
+.result-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.info-row span {
+  color: var(--muted);
+}
+
+.info-row strong {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Admin table */
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+}
+
+.staff-table th,
+.staff-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.staff-table th {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.staff-table td button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.staff-table td button.edit {
+  background: var(--primary);
+}
+
+.staff-table td button.delete {
+  background: var(--secondary);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-actions .btn {
+  width: auto;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+/* Modal for staff edit/add */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 420px;
+  max-height: 100%;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Toast message */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  background: rgba(16, 42, 67, 0.92);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  max-width: calc(100vw - 28px);
+  text-align: center;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+}
