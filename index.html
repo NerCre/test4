@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>命をツナゲル</title>
+  <!-- The green‑themed styles for Tsunageru -->
+  <link rel="stylesheet" href="tsunageru.css" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Top bar shown on all pages except during login -->
+    <header id="topbar" class="topbar" aria-label="操作バー">
+      <button id="btnBack" class="icon-btn" type="button" aria-label="戻る">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5.5 9 12l6.5 6.5-1.4 1.4L6.2 12l7.9-7.9 1.4 1.4z"/></svg>
+        <span>戻る</span>
+      </button>
+      <div class="topbar-title" aria-hidden="true">命をツナゲル</div>
+      <button id="btnRestartGlobal" class="icon-btn" type="button" aria-label="最初から">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 13.65-6.65z"/></svg>
+        <span>最初から</span>
+      </button>
+    </header>
+
+    <!-- Main area holding all views -->
+    <main class="main">
+      <!-- Login view: ask for user password before anything else -->
+      <section id="view-login" class="view active" aria-label="ログイン">
+        <h2>パスワードを入力してください</h2>
+        <div class="card">
+          <input id="loginPassword" type="password" placeholder="ユーザーパスワード" autocomplete="current-password" />
+          <button id="btnLogin" class="btn btn-primary" type="button">ログイン</button>
+        </div>
+        <p class="small-note">※ 安全課担当者のみが使用します。</p>
+      </section>
+
+      <!-- Home screen after login -->
+      <section id="view-home" class="view" aria-label="ホーム">
+        <div class="hero">
+          <h1 class="app-title">命をツナゲル</h1>
+          <p class="tagline">受信した連絡から職員の医療情報を表示します。</p>
+        </div>
+        <div class="button-container">
+          <button id="btnPasteSms" class="btn btn-primary" type="button">
+            メッセージを貼り付ける
+          </button>
+          <button id="btnOpenSettings" class="btn btn-secondary" type="button">
+            マスタ設定
+          </button>
+        </div>
+        <p class="small-note">※ 貼り付けた職員IDから血液型等の情報を照合します。</p>
+      </section>
+
+      <!-- Paste input view -->
+      <section id="view-input" class="view" aria-label="貼り付け">
+        <h2>メッセージを貼り付け</h2>
+        <p class="small">「命をツナグ」から届いたSMSの本文をそのまま貼り付けてください。</p>
+        <textarea id="inputSms" rows="6" placeholder="ここにメッセージを貼り付け"></textarea>
+        <div class="footer-actions">
+          <button id="btnParse" class="btn btn-primary" type="button">
+            照合する
+          </button>
+        </div>
+      </section>
+
+      <!-- Result view showing the aggregated medical information -->
+      <section id="view-result" class="view" aria-label="結果">
+        <h2>職員情報</h2>
+        <div id="resultCard" class="card">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="footer-actions">
+          <button id="btnResultBack" class="btn btn-secondary" type="button">戻る</button>
+        </div>
+      </section>
+
+      <!-- Settings login (admin) view -->
+      <section id="view-admin-login" class="view" aria-label="管理者ログイン">
+        <h2>マスタ設定ログイン</h2>
+        <div class="card">
+          <input id="adminPassword" type="password" placeholder="管理パスワード" autocomplete="current-password" />
+          <button id="btnAdminLogin" class="btn btn-primary" type="button">ログイン</button>
+        </div>
+        <p class="small-note">※ マスタ更新には管理者権限が必要です。</p>
+      </section>
+
+      <!-- Master settings view -->
+      <section id="view-settings" class="view" aria-label="マスタ設定">
+        <h2>マスタ設定</h2>
+        <div class="card">
+          <p class="small">登録済み職員一覧</p>
+          <table id="staffTable" class="data-table"></table>
+          <button id="btnAddStaff" class="btn btn-primary" type="button">職員を追加</button>
+        </div>
+        <div class="footer-actions">
+          <button id="btnSettingsBack" class="btn btn-secondary" type="button">戻る</button>
+        </div>
+      </section>
+
+      <!-- Staff edit view (add/edit) -->
+      <section id="view-edit" class="view" aria-label="職員編集">
+        <h2 id="editTitle">職員追加/編集</h2>
+        <div class="form">
+          <label>職員ID<input id="editId" type="text" placeholder="ID (例: S001)" /></label>
+          <label>氏名<input id="editName" type="text" placeholder="氏名" /></label>
+          <label>血液型<input id="editBlood" type="text" placeholder="血液型 (例: O+)" /></label>
+          <label>既往歴<textarea id="editHistory" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>薬剤情報<textarea id="editMedications" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>アレルギー<textarea id="editAllergies" rows="2" placeholder="カンマ区切りで複数入力可"></textarea></label>
+          <label>かかりつけ医<input id="editDoctor" type="text" placeholder="医師名" /></label>
+          <label>緊急連絡先（続柄）<input id="editContactName" type="text" placeholder="例: 妻" /></label>
+          <label>緊急連絡先（電話番号）<input id="editContactPhone" type="tel" placeholder="電話番号" /></label>
+        </div>
+        <div class="footer-actions">
+          <button id="btnSaveStaff" class="btn btn-primary" type="button">保存</button>
+          <button id="btnEditBack" class="btn btn-secondary" type="button">キャンセル</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast for notifications -->
+  <div id="toast" class="toast"></div>
+
+  <script src="tsunageru.js"></script>
+</body>
+</html>
