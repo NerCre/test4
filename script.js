@@ -557,7 +557,7 @@
                   style: 'emergency',
                   onClick: () => {
                     showOverlay(
-                      '<div class="overlay-illustration"><img src="CPR.png" alt="胸骨圧迫（CPR）の方法" /></div><div>両手を重ねて胸の中央を押します。<br>1分間に100〜120回のテンポで強く押してください。</div>',
+                      '<div class="overlay-illustration"><img src="CPR.png" alt="胸骨圧迫（CPR）の方法" /></div><div>心臓マッサージを開始してください。</div>',
                       [
                         {
                           label: '画面を終了',
@@ -664,7 +664,7 @@
 
   function concludeEmergency() {
     showOverlay(
-      '<div>救護活動を継続してください。<br>AEDが到着したらすぐに使用してください。</div><div class="overlay-illustration"><img src="AED.png" alt="AEDの使用手順" /></div>',
+      '<div>救護活動を継続してください。<br>AEDが到着後すぐに使用してください。</div><div class="overlay-illustration"><img src="AED.png" alt="AEDの使用手順" /></div>',
       [
         { label: '閉じる', style: 'secondary', onClick: () => {
             closeOverlay();
